@@ -5,7 +5,7 @@ const gameState = {
 	winningPlayer: null
 };
 
-function renderBoard() {
+const renderBoard = () => {
 	for (let i = 0; i < gameState.board.length; i++) {
 		const cell = document.getElementById(i.toString());
 		cell.textContent = gameState.board[i];
@@ -17,7 +17,7 @@ let currentPlayer = 'X';
 let gameOver = false;
 
 // Función para verificar si un jugador ha ganado
-function checkWin() {
+const checkWin = () => {
   const winningCombos = [
     [0, 1, 2],
     [3, 4, 5],
@@ -39,9 +39,9 @@ function checkWin() {
       gameOver = true;
       alert(`${currentPlayer} ganó el juego!`);
       break;
-    }
-  }
-}
+    };
+  };
+};
 
 // Función para cambiar de jugador
 function changePlayer() {
