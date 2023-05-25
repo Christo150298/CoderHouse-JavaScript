@@ -57,33 +57,57 @@ const stock = [
     { 
       marca: "Hyundai", 
       modelos: ["Tucson", "Santa Fe", "Elantra"], 
-      año: 2021, 
-      precio: 27000 
+      año: 2020, 
+      precio: 22000 
     }
   ];
   
-// Función para comprobar si un coche está en stock
-const comprobarStock = () => {
-    
-    const marca = prompt("Ingresa la marca del coche:");
-    const modelo = prompt("Ingresa el modelo del coche:");
-  
-    let encontrado = false;
-    let precio = 0;
+// Función para obtener los datos del usuario
+const obtenerDatos = () => {
+  const marca = prompt("Ingresa la marca del coche:");
+  const modelo = prompt("Ingresa el modelo del coche:");
 
-    for (let i = 0; i < stock.length; i++) {
-      if (stock[i].marca === marca && stock[i].modelos.includes(modelo)) {
-        encontrado = true;
-        precio = stock[i].precio;
-        break;
-      };
-    };
-  
-    if (encontrado) {
-      alert(`Estas de Suerte!, tenemos ese coche en stock. El precio del vehículo es: ${precio}€.`);
-    } else {
-      alert("Lo siento, no tenemos ese coche en stock.");
-    };
+  return { marca, modelo };
+};
+
+// Función para mostrar los resultados de la búsqueda
+const resultadosBusqueda = (cocheEncontrado, cocheConDescuento) => {
+  if (cocheEncontrado) {
+    let mensaje = `Estás de suerte! Tenemos ese coche en stock.\nMarca: ${cocheEncontrado.marca}\nModelo: ${cocheEncontrado.modelos.join(", ")}\nAño: ${cocheEncontrado.año}\nPrecio: ${cocheEncontrado.precio}€`;
+
+    if (cocheConDescuento) {
+      mensaje += `\n¡Este coche tiene un descuento aplicado del 15%! Precio con descuento: ${cocheConDescuento.precio}€`;
+    }
+
+    alert(mensaje);
+  } else {
+    alert("Lo siento, no tenemos ese coche en stock.");
   };
-  
+};
+
+// Función principal (comprobarStock)
+const comprobarStock = () => {
+  const { marca, modelo } = obtenerDatos();
+
+  const cocheEncontrado = stock.find(
+    (coche) => coche.marca === marca && coche.modelos.includes(modelo)
+  );
+
+  // Filtrar y aplicar descuento a los coches cuyo año de fabricacion sea anterior a 2022
+  const cochesDescuento = stock
+    .filter((coche) => coche.año < 2022)
+    .map((coche) => {
+      const descuento = coche.precio * 0.15;
+      const precioDescuento = coche.precio - descuento;
+      return { ...coche, precio: precioDescuento };
+    });
+
+  const cocheConDescuento = cochesDescuento.find(
+    (coche) => coche.marca === marca && coche.modelos.includes(modelo)
+  );
+
+  resultadosBusqueda(cocheEncontrado, cocheConDescuento);
+};
+
+// Llamada a la función principal
 comprobarStock();
