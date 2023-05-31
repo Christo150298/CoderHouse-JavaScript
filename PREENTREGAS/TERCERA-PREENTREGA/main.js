@@ -19,7 +19,7 @@ const renderTasks = () => {
     listItem.appendChild(deleteButton);
     todoList.appendChild(listItem);
 
-    // Agregar evento para eliminar tarea al hacer clic en el botón
+    // Agregar evento para eliminar tarea
     deleteButton.addEventListener('click', () => {
       tasks.splice(index, 1);
       renderTasks();
@@ -28,12 +28,12 @@ const renderTasks = () => {
   });
 };
 
-// Función para guardar las tareas en el almacenamiento local
+// Función para guardar las tareas
 const saveTasks = () => {
   localStorage.setItem('tasks', JSON.stringify(tasks));
 };
 
-// Función para agregar una tarea al presionar Enter
+// Función para agregar una tarea
 const addTask = (event) => {
   if (event.key === 'Enter') {
     const task = todoInput.value.trim();
