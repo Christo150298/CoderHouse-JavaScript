@@ -1,51 +1,88 @@
 // Obtener referencias a los elementos del DOM
-const todoInput = document.getElementById('todoInput');
-const todoList = document.getElementById('todoList');
+const nameInput = document.getElementById('nameInput');
+const phoneInput = document.getElementById('phoneInput');
+const addressInput = document.getElementById('addressInput');
+const contactList = document.getElementById('contactList');
 
-// Obtener las tareas desde el almacenamiento local o inicializar si no existen
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+// Obtener los contactos desde el almacenamiento local o inicializar si no existen
+let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
 
-// Función para renderizar las tareas en la lista
-const renderTasks = () => {
-  todoList.innerHTML = '';
-  tasks.forEach((task, index) => {
+// Función para renderizar los contactos en la lista
+const renderContacts = () => {
+  contactList.innerHTML = '';
+  contacts.forEach((contact, index) => {
     const listItem = document.createElement('li');
-    listItem.textContent = task;
+    const nameElement = document.createElement('span');
+    nameElement.textContent = 'Nombre: ' + contact.name;
+    const phoneElement = document.createElement('span');
+    phoneElement.textContent = 'Teléfono: ' + contact.phone;
+    const addressElement = document.createElement('span');
+    addressElement.textContent = 'Dirección: ' + contact.address;
 
     const deleteButton = document.createElement('button');
     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
     deleteButton.classList.add('delete-button');
-    
-    listItem.appendChild(deleteButton);
-    todoList.appendChild(listItem);
 
-    // Agregar evento para eliminar tarea
+    listItem.appendChild(nameElement);
+    listItem.appendChild(phoneElement);
+    listItem.appendChild(addressElement);
+    listItem.appendChild(deleteButton);
+    contactList.appendChild(listItem);
+
+    // Agregar evento para eliminar contacto
     deleteButton.addEventListener('click', () => {
-      tasks.splice(index, 1);
-      renderTasks();
-      saveTasks();
+      contacts.splice(index, 1);
+      renderContacts();
+      saveContacts();
     });
   });
 };
 
-// Función para guardar las tareas
-const saveTasks = () => {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
+// Función para guardar los contactos
+const saveContacts = () => {
+  localStorage.setItem('contacts', JSON.stringify(contacts));
 };
 
-// Función para agregar una tarea
-const addTask = (event) => {
+// Función para agregar un contacto
+const addContact = (event) => {
   if (event.key === 'Enter') {
-    const task = todoInput.value.trim();
-    if (task !== '') {
-      tasks.push(task);
-      renderTasks();
-      saveTasks();
-      todoInput.value = '';
-    };
-  };
+    event.preventDefault(); // Evitar el comportamiento predeterminado del Enter (enviar formulario)
+
+    if (document.activeElement === nameInput) {
+      phoneInput.focus();
+    } else if (document.activeElement === phoneInput) {
+      addressInput.focus();
+    } else if (document.activeElement === addressInput) {
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const address = addressInput.value.trim();
+
+      if (name !== '' && phone !== '' && address !== '') {
+        const contact = {
+          name: name,
+          phone: phone,
+          address: address
+        };
+
+        contacts.push(contact);
+        renderContacts();
+        saveContacts();
+
+        nameInput.value = '';
+        phoneInput.value = '';
+        addressInput.value = '';
+        nameInput.focus();
+      } else {
+        alert('Todos los campos son obligatorios');
+      }
+    }
+  }
 };
 
-// Agregar evento al input para agregar tareas al presionar Enter
-todoInput.addEventListener('keyup', addTask);
-document.addEventListener('DOMContentLoaded', renderTasks);
+// Agregar evento al input de nombre para agregar contactos al presionar Enter
+nameInput.addEventListener('keydown', addContact);
+phoneInput.addEventListener('keydown', addContact);
+addressInput.addEventListener('keydown', addContact);
+
+// Renderizar los contactos al cargar la página
+document.addEventListener('DOMContentLoaded', renderContacts);
